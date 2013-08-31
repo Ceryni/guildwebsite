@@ -1,0 +1,80 @@
+buildscript {
+    repositories {
+        mavenCentral()
+    }
+
+    dependencies {
+        classpath 'org.gradle.api.plugins:gradle-tomcat-plugin:0.9.9'
+    }
+}
+
+apply plugin: 'java'
+apply plugin: 'groovy'
+apply plugin: 'idea'
+apply plugin: 'war'
+apply plugin: 'tomcat'
+
+sourceCompatibility = 1.7
+version = '0.1'
+
+project.ext {
+    springVersion = "3.2.4.RELEASE"
+    tomcatHome = "C:\\Users\\Fitz\\dev\\java\\tools\\apache-tomcat-7.0.42"
+    tomcatWebapps = "${tomcatHome}\\webapps"
+}
+
+idea {
+    project {
+        jdkName = sourceCompatibility
+        languageLevel = sourceCompatibility
+    }
+}
+
+repositories {
+    mavenCentral()
+}
+
+dependencies {
+    def tomcatVersion = '7.0.42'
+    tomcat "org.apache.tomcat.embed:tomcat-embed-core:${tomcatVersion}",
+            "org.apache.tomcat.embed:tomcat-embed-logging-juli:${tomcatVersion}"
+    tomcat("org.apache.tomcat.embed:tomcat-embed-jasper:${tomcatVersion}") {
+        exclude group: 'org.eclipse.jdt.core.compiler', module: 'ecj'
+    }
+
+    compile "org.springframework:spring-context:${project.springVersion}"
+    compile "org.springframework:spring-webmvc:${project.springVersion}"
+    compile "org.springframework:spring-web:${project.springVersion}"
+
+    providedCompile "javax.servlet:javax.servlet-api:3.0.1"
+    compile "jstl:jstl:1.2"
+
+    testCompile "org.codehaus.groovy:groovy-all:2.1.+"
+    testCompile "org.spockframework:spock-core:0.7-groovy-2.+"
+}
+
+//task stopTomcat(type: Exec) {
+//    println "Stopping Tomcat..."
+//    workingDir "${project.tomcatHome}\\bin"
+//    commandLine 'cmd', '/c', 'shutdown.bat'
+//}
+//
+//task startTomcat(type: Exec) {
+//    println "Starting Tomcat..."
+//    workingDir "${project.tomcatHome}\\bin"
+//    commandLine 'cmd', '/c', 'startup.bat'
+//}
+//
+//task restartTomcat {
+//    tasks.stopTomcat
+//    tasks.startTomcat
+//}
+//
+//build.doLast {
+//    copy {
+//        from("build/libs") {
+//            include "**/*.war"
+//        }
+//        into $ { tomcatWebapps }
+//    }
+//}
